@@ -1,0 +1,69 @@
+S3Upload
+========
+
+A jQuery plugin for direct upload to an Amazon S3 bucket. 
+
+By signing the request server side we also avoid the security issue of showing the Amazon AWS Access Id Key and Secure Key in plain text. A library for signing the request in Ruby is attached, but the logic should be very easy to replicate in other languages like PHP or Python.
+
+The Javascript plugin also allows these callback functions: 
+
+* onselect(info) 	- Called when a user has selected a file.
+* oncancel(info) 	- Called if the user decides to abort the file browsing.
+* onstart(info) 	- Called after the request has been signed and the file upload to S3 is starting.
+* onprogress(progress,info) - Called while uploading, "progress" being a float between 0 and 1 of the current upload progress.
+* oncomplete(info) 	- Called when the upload has finished successfully.
+* onerror(msg,info) - Called if there's been a problem with a message saying what failed.
+
+_info_ is an object containing "name", "size" and "type" of the selected file.
+
+Every callback is scoped to the SWF object itself (i.e. "this" in the callbacks points to the object). Also by returning true from a callback function the default callback is used as well.
+
+Which file types that can be selected may be defined with the "file_types" option, see the "Usage Example" below for more info. If none is defined all files are acceptable.
+
+
+Requirements
+-------------
+
+* jQuery 1.3+
+* SWFObject 2.1+
+
+Both available from Google AJAX APIs (recommended as it likely speeds things up).
+
+
+Example Usage
+-------------
+
+	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+	<script type="text/javascript" charset="utf-8" src="jquery.s3upload.js"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			var max_file_size = 2000;
+			$("form").s3upload({
+				prefix: "s3upload/",
+				required: true,
+				onselect: function(info) {
+					console.log( this , info );
+					if( parseInt( info.size ) < max_file_size )
+						return true; // Default is to show the filename in the element.
+					else
+						alert("Too big file!");
+				},	
+				file_types: [ 
+					[ "Images" , "*.png;*.jpg;*.bmp"], 
+					[ "Documents" , "*.pdf;*.doc;*.txt"]
+				]
+			});
+		});
+	</script>
+
+	<form action="/s3upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+		<label for="media_title">Title</label>
+		<input type="text" name="media[title]" value="" id="media_title" />
+		<label for="media_video">Video</label>
+		<input type="file" name="media[video]" value="" id="media_video" />
+		<label for="media_thumbnail">Thumbnail</label>
+		<input type="file" name="media[thumbnail]" value="" id="media_thumbnail" />
+		<input type="submit" value="Upload" />
+	</form>
