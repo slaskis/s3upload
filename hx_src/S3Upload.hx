@@ -1,6 +1,7 @@
 class S3Upload extends flash.display.Sprite {
 	
 	static var _id : String;
+	
 	var _signatureURL : String;
 	var _prefix : String;
 	var _fr : flash.net.FileReference;
@@ -40,12 +41,36 @@ class S3Upload extends flash.display.Sprite {
 	
 	function enable() {
 		buttonMode = true;
+		doubleClickEnabled = true;
 		addEventListener( "click" , onBrowse );
+		addEventListener( "click" , onMouseEvent );
+		addEventListener( "rollOver" , onMouseEvent );
+		addEventListener( "rollOut" , onMouseEvent );
+		addEventListener( "mouseMove" , onMouseEvent );
+		addEventListener( "mouseDown" , onMouseEvent );
+		addEventListener( "mouseUp" , onMouseEvent );
+		addEventListener( "mouseOver" , onMouseEvent );
+		addEventListener( "mouseOut" , onMouseEvent );
+		addEventListener( "doubleClick" , onMouseEvent );
 	}
 	
 	function disable() {
 		buttonMode = false;
+		doubleClickEnabled = false;
 		removeEventListener( "click" , onBrowse );
+		removeEventListener( "click" , onMouseEvent );
+		removeEventListener( "rollOver" , onMouseEvent );
+		removeEventListener( "rollOut" , onMouseEvent );
+		removeEventListener( "mouseMove" , onMouseEvent );
+		removeEventListener( "mouseDown" , onMouseEvent );
+		removeEventListener( "mouseUp" , onMouseEvent );
+		removeEventListener( "mouseOver" , onMouseEvent );
+		removeEventListener( "mouseOut" , onMouseEvent );
+		removeEventListener( "doubleClick" , onMouseEvent );
+	}
+	
+	function onMouseEvent(e) {
+		call( "mouseevent" , [e.type.toLowerCase(),e.stageX,e.stageY] );
 	}
 	
 	function upload() {
@@ -122,7 +147,9 @@ class S3Upload extends flash.display.Sprite {
 		call( "start" , [] );
 	}
 	
-	static function call( eventType , args : Array<Dynamic> ) {
+	static function call( eventType , args : Array<Dynamic> = null ) {
+		if( args == null ) 
+			args = [];
 		var method = "on"+eventType;
 		if( _id != null && flash.external.ExternalInterface.available ) {
 			var c = "function(){

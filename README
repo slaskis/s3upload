@@ -3,9 +3,11 @@ S3Upload
 
 A jQuery plugin for direct upload to an Amazon S3 bucket. 
 
-By signing the request server side we also avoid the security issue of showing the Amazon AWS Access Id Key and Secure Key in plain text. A library for signing the request in Ruby is attached, but the logic should be very easy to replicate in other languages like PHP or Python.
+It works by replacing a file input with a html div overlaid with a transparent SWF. The same way [Flickr](http://www.flickr.com/photos/upload/) does it. 
 
-The Javascript plugin also allows these callback functions: 
+By signing the request server side we also avoid the security issue of showing the Amazon AWS Access Id Key and Secure Key in plain text. A library for signing the request in Ruby is included, but the logic should be very easy to replicate in other languages like PHP or Python.
+
+The Javascript API also allows these callback functions: 
 
 * onselect(info) 	- Called when a user has selected a file.
 * oncancel(info) 	- Called if the user decides to abort the file browsing.
@@ -16,7 +18,21 @@ The Javascript plugin also allows these callback functions:
 
 _info_ is an object containing "name", "size" and "type" of the selected file.
 
-Every callback is scoped to the SWF object itself (i.e. "this" in the callbacks points to the object). Also by returning true from a callback function the default callback is used as well.
+And these mouse callbacks:
+
+* onmouseover(x,y)
+* onmouseout(x,y)
+* onmousedown(x,y)
+* onmouseup(x,y)
+* onmousemove(x,y)
+* onclick(x,y)
+* onrollover(x,y)
+* onrollout(x,y)
+* ondoubleclick(x,y)
+
+And the mouse events are also triggered as regular jquery events (i.e. `$('#input_replaced').rollover(function(){alert('over!')});` should work just fine as well).
+
+Every callback is scoped to the DOM element which has replaced the previous input (i.e. "this" in the callbacks points to the element which shows _Select file..._ by default). Also by returning `true` in a callback function the default callback is used as well.
 
 Which file types that can be selected may be defined with the "file_types" option, see the "Usage Example" below for more info. If none is defined all files are acceptable.
 
@@ -39,16 +55,15 @@ Example Usage
 	
 	<script type="text/javascript" charset="utf-8">
 		$(function(){
-			var max_file_size = 2000;
+			var max_file_size = 2 * 1024 * 1024; // = 2Mb
 			$("form").s3upload({
 				prefix: "s3upload/",
 				required: true,
 				onselect: function(info) {
-					console.log( this , info );
 					if( parseInt( info.size ) < max_file_size )
 						return true; // Default is to show the filename in the element.
 					else
-						alert("Too big file!");
+						$(this).html("Too big file! Must be smaller than " + max_file_size + " (was "+info.size+")");
 				},	
 				file_types: [ 
 					[ "Images" , "*.png;*.jpg;*.bmp"], 
