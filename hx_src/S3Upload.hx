@@ -14,7 +14,7 @@ class S3Upload extends flash.display.Sprite {
 		_signatureURL = stage.loaderInfo.parameters.signatureURL;
 		_prefix = stage.loaderInfo.parameters.prefix;
 		_filters = [];
-		if( stage.loaderInfo.parameters.filters != null ) {
+		if( stage.loaderInfo.parameters.filters != null && stage.loaderInfo.parameters.filters != "" ) {
 			for( filter in stage.loaderInfo.parameters.filters.split("|") ) {
 				var f = filter.split("#");
 				_filters.push( new flash.net.FileFilter( f[0] , f[1] ) );
@@ -35,7 +35,10 @@ class S3Upload extends flash.display.Sprite {
 		var fr = new flash.net.FileReference();
 		fr.addEventListener( "cancel" , function(e) { call( e.type , [] ); } );
 		fr.addEventListener( "select" , function(e) { call( e.type , [fr.name,fr.size,extractType(fr)]); } );
-		fr.browse( _filters );
+		if( _filters.length > 0 )
+			fr.browse( _filters );
+		else
+			fr.browse();
 		_fr = fr;
 	}
 	
