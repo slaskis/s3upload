@@ -107,7 +107,7 @@ class S3Upload extends flash.display.Sprite {
 			var ext = fr.name.split(".").pop();
 			var mime = new MimeTypes().getMimeType( ext );
 			if( mime == null )
-				return "binary/octet-stream";
+				return "application/octet-stream";
 			else
 				return mime;
 		}
@@ -115,7 +115,7 @@ class S3Upload extends flash.display.Sprite {
 	}
 	
 	function onSignatureError(e) {
-		call( "error" , ["Could not get signature because: " + e.message] );
+		call( "error" , ["Could not get signature because: " + e.text] );
 	}
 	
 	function onSignatureComplete(e) {
@@ -269,6 +269,7 @@ class S3Request {
 		fr.addEventListener( "securityError" , onUploadError );
 		fr.addEventListener( "ioError" , onUploadError );
         fr.addEventListener( "progress" , onUploadProgress);
+        fr.addEventListener( "open" , onUploadOpen);
         fr.addEventListener( "httpStatus", onUploadHttpStatus);
 
         fr.upload(req, "file", false);
@@ -277,8 +278,10 @@ class S3Request {
 	function onUploadComplete( e ) {
 		if( isError( e.data ) )
 			onError( "Amazon S3 returned an error: " + e.data );
-		else
+		else {
+			onProgress( 1 );
 			onComplete();
+		}
 	}
 	
 	function onUploadHttpStatus( e ) {
@@ -287,6 +290,10 @@ class S3Request {
 			onComplete();
 		else
 			onError( "Amazon S3 returned an error: " + e.status );
+	}
+	
+	function onUploadOpen( e ) {
+		onProgress( 0 );
 	}
 	
 	function onUploadProgress( e ) {
