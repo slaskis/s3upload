@@ -15,6 +15,8 @@ The Javascript API also allows these callback functions:
 * onprogress(progress,info) - Called while uploading, "progress" being a float between 0 and 1 of the current upload progress.
 * oncomplete(info) 	- Called when the upload has finished successfully.
 * onerror(msg,info) - Called if there's been a problem with a message saying what failed.
+* onenabled()		- Called when the SWF has been enabled. Usually when swf.enable() has been called. Called first thing when the SWF is finished initializing.
+* ondisabled()		- Called when the SWF has been disabled. Usually when swf.disable() has been called.
 
 _info_ is an object containing "name", "size" and "type" of the selected file.
 
@@ -49,6 +51,8 @@ Both available from Google AJAX APIs (recommended as it likely speeds things up)
 Example Usage
 -------------
 
+The HTML/JS part:
+
 	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 	<script type="text/javascript" charset="utf-8" src="jquery.s3upload.js"></script>
@@ -82,3 +86,12 @@ Example Usage
 		<input type="file" name="media[thumbnail]" value="" id="media_thumbnail" />
 		<input type="submit" value="Upload" />
 	</form>
+	
+	
+The Sinatra part (assumes the _s3upload_ gem is installed):
+
+	require "s3upload"
+	get "/s3upload" do
+	  up = S3::Upload.new( options.s3_upload_access_key_id , options.s3_upload_secret_key , options.s3_upload_bucket )
+	  up.to_xml( params[:key] , params[:contentType] )
+	end

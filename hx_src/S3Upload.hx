@@ -55,6 +55,7 @@ class S3Upload extends flash.display.Sprite {
 		addEventListener( "mouseOver" , onMouseEvent );
 		addEventListener( "mouseOut" , onMouseEvent );
 		addEventListener( "doubleClick" , onMouseEvent );
+		call("enabled");
 	}
 	
 	function disable() {
@@ -70,6 +71,7 @@ class S3Upload extends flash.display.Sprite {
 		removeEventListener( "mouseOver" , onMouseEvent );
 		removeEventListener( "mouseOut" , onMouseEvent );
 		removeEventListener( "doubleClick" , onMouseEvent );
+		call("disabled");
 	}
 	
 	function onMouseEvent(e) {
