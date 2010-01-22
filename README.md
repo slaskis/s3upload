@@ -3,7 +3,7 @@ S3Upload
 
 A jQuery plugin for direct upload to an Amazon S3 bucket. 
 
-It works by replacing a file input with a html div overlaid with a transparent SWF. The same way [Flickr](http://www.flickr.com/photos/upload/) does it. 
+It works by replacing a file input with a html element overlaid with a transparent SWF. The same way [Flickr](http://www.flickr.com/photos/upload/) does it. 
 
 By signing the request server side we also avoid the security issue of showing the Amazon AWS Access Id Key and Secure Key in plain text. A library for signing the request in Ruby is included, but the logic should be very easy to replicate in other languages like PHP or Python.
 
@@ -32,11 +32,11 @@ And these mouse callbacks:
 * onrollout(x,y)
 * ondoubleclick(x,y)
 
-And the mouse events are also triggered as regular jquery events (i.e. `$('#input_replaced').rollover(function(){alert('over!')});` should work just fine as well).
+The mouse events are also triggered as regular jQuery events (i.e. `$('#input_replaced').rollover(function(){alert('over!')});` should work just fine as well).
 
-Every callback is scoped to the DOM element which has replaced the previous input (i.e. "this" in the callbacks points to the element which shows _Select file..._ by default). Also by returning `true` in a callback function the default callback is used as well.
+Every callback is scoped to the DOM element which has replaced the previous input (i.e. "this" in the callbacks points to the html element). Also by returning `true` in a callback function the default callback will be used.
 
-Which file types that can be selected may be defined with the "file_types" option, see the "Usage Example" below for more info. If none is defined all files are acceptable.
+Which file types that can be selected may be defined with the _file\_types_ option, see the "Usage Example" below for more info. If none is defined all files are acceptable.
 
 
 Requirements
@@ -77,7 +77,7 @@ The HTML/JS part:
 		});
 	</script>
 
-	<form action="/s3upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+	<form action="/media/new" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 		<label for="media_title">Title</label>
 		<input type="text" name="media[title]" value="" id="media_title" />
 		<label for="media_video">Video</label>

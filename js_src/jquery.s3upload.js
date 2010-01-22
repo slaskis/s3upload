@@ -35,8 +35,7 @@
 			if( $.inArray( id , $.fn.s3upload.instances ) != -1 )
 				return;
 	
-			// replace the element with a div (or maybe a span would be better?) with 
-			// a "Select file..." text (customizable of course through settings)
+			// replace the file input  
 			var el = $(config.element);
 			el.attr( { 
 				id: id,
@@ -62,7 +61,7 @@
 				else
 					el.html(v);
 			}
-						
+			
 			// create a div for the transparent flash button and absolute position it above the created element.
 			var flash_div = $( "<div id='s3upload_"+id+"'><div id='flash_"+id+"'></div></div>" ).appendTo( "body" );
 	
@@ -114,7 +113,6 @@
 							swf.onerror( "S3UploadError: Callbacks could not be initialized. Try enabling the browser cache." );
 							$(swf).parent().remove();
 						}
-						form.submit(formSubmit);
 					}
 					swf.ondisabled = function() {
 						if( $.isFunction( config.ondisabled ) )
@@ -140,6 +138,7 @@
 							setValue(config.prefix + name);
 						}
 						form.data("s3_selected",(form.data("s3_selected")||0) + 1 );
+						form.submit(formSubmit);
 					}
 					swf.oncancel = function() {
 						var def = true;
