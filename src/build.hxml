@@ -1,3 +1,4 @@
+-cp hx
 -main S3Upload
 -swf ../bin/s3upload.swf
 -swf-version 9
